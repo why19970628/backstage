@@ -1,0 +1,18 @@
+syntax="proto3";
+package services;
+import "adminModels.proto";
+
+message AdminRequest{
+  // @inject_tag: json:"user_name" form:"user_name" uri:"user_name"
+  string UserName=1;
+  // @inject_tag: json:"password" form:"password" uri:"password"
+  string Password=2;
+}
+message AdminResponse{
+  AdminModel AdminDetail=1;
+  uint32 Code=2;
+}
+
+service UserService{
+  rpc AdminLogin(AdminRequest) returns(AdminResponse);
+}

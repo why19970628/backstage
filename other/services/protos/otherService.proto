@@ -1,0 +1,23 @@
+syntax="proto3";
+package services;
+import "carouselModels.proto";
+
+message CarouselRequest{
+  // @inject_tag: json:"carousel_id" form:"carousel_id" uri:"carousel_id"
+  uint32 carouselID=1;
+  // @inject_tag: json:"product_id" form:"product_id" uri:"product_id"
+	uint32 ProductID=2;
+	// @inject_tag: json:"img_path" form:"img_path" uri:"img_path"
+  string ImgPath=3;
+}
+message CarouselsListResponse{
+  repeated CarouselModel CarouselsList=1;
+}
+
+message CarouselDetailResponse{
+  CarouselModel CarouselDetail=1;
+}
+service OtherService{
+  rpc GetCarouselsList(CarouselRequest) returns(CarouselsListResponse);
+  rpc UpdateCarousel(CarouselRequest) returns(CarouselDetailResponse);
+}
