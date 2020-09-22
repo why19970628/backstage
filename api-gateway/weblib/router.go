@@ -4,7 +4,7 @@
  * @Author: congz
  * @Date: 2020-09-20 11:33:37
  * @LastEditors: congz
- * @LastEditTime: 2020-09-21 15:51:22
+ * @LastEditTime: 2020-09-22 22:01:28
  */
 package weblib
 
@@ -26,13 +26,15 @@ func NewRouter(service ...interface{}) *gin.Engine {
 		authed := v1.Group("/")
 		{
 			authed.Use(middlewares.JWT())
-			authed.POST("/products", handlers.GetProductsList)
+			authed.POST("/products-list", handlers.GetProductsList)
 			authed.GET("/products/:product_id", handlers.GetProductDetail)
 		}
 		v1.GET("/carousels", handlers.GetCarouselsList)
 		v1.POST("/carousels", handlers.UpdateCarousel)
+		v1.GET("/notices/:notice_id", handlers.GetNotice)
 
 		v1.POST("/admins", handlers.AdminLogin)
+		v1.POST("/users-list", handlers.GetUsersList)
 	}
 	return ginRouter
 }

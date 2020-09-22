@@ -38,7 +38,7 @@ func DefaultProducts(rsp interface{}) {
 		models = append(models, NewProduct(i, "降级商品"+strconv.Itoa(20+int(i))))
 	}
 	result := rsp.(*services.ProductsListResponse)
-	result.ProductList = models
+	result.ProductsList = models
 }
 
 //DefaultData 通用降级方法

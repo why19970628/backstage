@@ -4,14 +4,14 @@ import "productModels.proto";
 
 message ProductRequest{
   // @inject_tag: json:"product_id" form:"product_id" uri:"product_id"
-  int32 product_id=1;
+  uint32 product_id=1;
   // @inject_tag: json:"start" form:"start" uri:"start"
-  int32 start=2;
+  uint32 start=2;
   // @inject_tag: json:"limit" form:"limit" uri:"limit"
-  int32 limit=3;
+  uint32 limit=3;
 }
 message ProductsListResponse{
-  repeated ProductModel ProductList=1;
+  repeated ProductModel ProductsList=1;
 }
 
 message ProductDetailResponse{
@@ -19,5 +19,5 @@ message ProductDetailResponse{
 }
 service ProductService{
   rpc GetProductsList(ProductRequest) returns(ProductsListResponse);
-  rpc GetProductDetail(ProductRequest) returns(ProductDetailResponse);
+  rpc GetProduct(ProductRequest) returns(ProductDetailResponse);
 }

@@ -1,6 +1,6 @@
 syntax="proto3";
 package services;
-import "adminModels.proto";
+import "userModels.proto";
 
 message AdminRequest{
   // @inject_tag: json:"user_name" form:"user_name" uri:"user_name"
@@ -8,11 +8,24 @@ message AdminRequest{
   // @inject_tag: json:"password" form:"password" uri:"password"
   string Password=2;
 }
-message AdminResponse{
+message AdminDetailResponse{
   AdminModel AdminDetail=1;
   uint32 Code=2;
 }
 
+message UserRequest{
+  // @inject_tag: json:"user_id" form:"user_id" uri:"user_id"
+  uint32 UserID=1;
+  // @inject_tag: json:"start" form:"start" uri:"start"
+  uint32 start=2;
+  // @inject_tag: json:"limit" form:"limit" uri:"limit"
+  uint32 limit=3;
+}
+message UsersListResponse{
+  repeated UserModel UsersList=1;
+}
+
 service UserService{
-  rpc AdminLogin(AdminRequest) returns(AdminResponse);
+  rpc AdminLogin(AdminRequest) returns(AdminDetailResponse);
+  rpc GetUsersList(UserRequest) returns(UsersListResponse);
 }

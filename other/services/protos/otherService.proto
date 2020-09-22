@@ -1,10 +1,10 @@
 syntax="proto3";
 package services;
-import "carouselModels.proto";
+import "otherModels.proto";
 
 message CarouselRequest{
   // @inject_tag: json:"carousel_id" form:"carousel_id" uri:"carousel_id"
-  uint32 carouselID=1;
+  uint32 CarouselID=1;
   // @inject_tag: json:"product_id" form:"product_id" uri:"product_id"
 	uint32 ProductID=2;
 	// @inject_tag: json:"img_path" form:"img_path" uri:"img_path"
@@ -13,11 +13,21 @@ message CarouselRequest{
 message CarouselsListResponse{
   repeated CarouselModel CarouselsList=1;
 }
-
 message CarouselDetailResponse{
   CarouselModel CarouselDetail=1;
+}
+
+message NoticeRequest{
+  // @inject_tag: json:"notice_id" form:"notice_id" uri:"notice_id"
+  uint32 NoticeID=1;
+  // @inject_tag: json:"text" form:"text" uri:"text"
+  string Text=2;  
+}
+message NoticeDetailResponse{
+  NoticeModel NoticeDetail=1;
 }
 service OtherService{
   rpc GetCarouselsList(CarouselRequest) returns(CarouselsListResponse);
   rpc UpdateCarousel(CarouselRequest) returns(CarouselDetailResponse);
+  rpc GetNotice(NoticeRequest) returns(NoticeDetailResponse);
 }

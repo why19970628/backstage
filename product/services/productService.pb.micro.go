@@ -35,7 +35,7 @@ var _ server.Option
 
 type ProductService interface {
 	GetProductsList(ctx context.Context, in *ProductRequest, opts ...client.CallOption) (*ProductsListResponse, error)
-	GetProductDetail(ctx context.Context, in *ProductRequest, opts ...client.CallOption) (*ProductDetailResponse, error)
+	GetProduct(ctx context.Context, in *ProductRequest, opts ...client.CallOption) (*ProductDetailResponse, error)
 }
 
 type productService struct {
@@ -66,8 +66,8 @@ func (c *productService) GetProductsList(ctx context.Context, in *ProductRequest
 	return out, nil
 }
 
-func (c *productService) GetProductDetail(ctx context.Context, in *ProductRequest, opts ...client.CallOption) (*ProductDetailResponse, error) {
-	req := c.c.NewRequest(c.name, "ProductService.GetProductDetail", in)
+func (c *productService) GetProduct(ctx context.Context, in *ProductRequest, opts ...client.CallOption) (*ProductDetailResponse, error) {
+	req := c.c.NewRequest(c.name, "ProductService.GetProduct", in)
 	out := new(ProductDetailResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -80,13 +80,13 @@ func (c *productService) GetProductDetail(ctx context.Context, in *ProductReques
 
 type ProductServiceHandler interface {
 	GetProductsList(context.Context, *ProductRequest, *ProductsListResponse) error
-	GetProductDetail(context.Context, *ProductRequest, *ProductDetailResponse) error
+	GetProduct(context.Context, *ProductRequest, *ProductDetailResponse) error
 }
 
 func RegisterProductServiceHandler(s server.Server, hdlr ProductServiceHandler, opts ...server.HandlerOption) error {
 	type productService interface {
 		GetProductsList(ctx context.Context, in *ProductRequest, out *ProductsListResponse) error
-		GetProductDetail(ctx context.Context, in *ProductRequest, out *ProductDetailResponse) error
+		GetProduct(ctx context.Context, in *ProductRequest, out *ProductDetailResponse) error
 	}
 	type ProductService struct {
 		productService
@@ -103,6 +103,6 @@ func (h *productServiceHandler) GetProductsList(ctx context.Context, in *Product
 	return h.ProductServiceHandler.GetProductsList(ctx, in, out)
 }
 
-func (h *productServiceHandler) GetProductDetail(ctx context.Context, in *ProductRequest, out *ProductDetailResponse) error {
-	return h.ProductServiceHandler.GetProductDetail(ctx, in, out)
+func (h *productServiceHandler) GetProduct(ctx context.Context, in *ProductRequest, out *ProductDetailResponse) error {
+	return h.ProductServiceHandler.GetProduct(ctx, in, out)
 }

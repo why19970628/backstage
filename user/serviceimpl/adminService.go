@@ -4,7 +4,7 @@
  * @Author: congz
  * @Date: 2020-09-15 10:57:26
  * @LastEditors: congz
- * @LastEditTime: 2020-09-21 15:28:09
+ * @LastEditTime: 2020-09-22 21:50:57
  */
 package serviceimpl
 
@@ -28,12 +28,8 @@ func BuildAdmin(item model.Admin) *services.AdminModel {
 	return &adminModel
 }
 
-//UserService 用户服务
-type UserService struct {
-}
-
 //AdminLogin 实现用户服务接口 管理员登录
-func (*UserService) AdminLogin(ctx context.Context, req *services.AdminRequest, res *services.AdminResponse) error {
+func (*UserService) AdminLogin(ctx context.Context, req *services.AdminRequest, res *services.AdminDetailResponse) error {
 	var admin model.Admin
 	res.Code = 200
 	if err := model.DB.Where("user_name = ?", req.UserName).First(&admin).Error; err != nil {

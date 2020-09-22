@@ -4,7 +4,7 @@
  * @Author: congz
  * @Date: 2020-09-15 10:57:26
  * @LastEditors: congz
- * @LastEditTime: 2020-09-20 16:10:15
+ * @LastEditTime: 2020-09-22 21:43:43
  */
 package serviceimpl
 
@@ -42,22 +42,28 @@ func (*ProductService) GetProductsList(ctx context.Context, req *services.Produc
 	}
 	//在数据库查找值
 	productData := []model.Product{}
-	model.DB.Offset(req.Start).Limit(req.Limit).Find(&productData)
+	err := model.DB.Offset(req.Start).Limit(req.Limit).Find(&productData).Error
+	if err != nil {
+		return err
+	}
 	//序类化商品列表
 	productRes := []*services.ProductModel{}
 	for _, item := range productData {
 		productRes = append(productRes, BuildProduct(item))
 	}
 	//序列化后的结果赋给response
-	res.ProductList = productRes
+	res.ProductsList = productRes
 	return nil
 }
 
-//GetProductDetail 实现商品服务接口 获取商品详情
-func (*ProductService) GetProductDetail(ctx context.Context, req *services.ProductRequest, res *services.ProductDetailResponse) error {
+//GetProduct 实现商品服务接口 获取商品详情
+func (*ProductService) GetProduct(ctx context.Context, req *services.ProductRequest, res *services.ProductDetailResponse) error {
 	//在数据库查找值
 	productData := model.Product{}
-	model.DB.First(&productData, req.ProductId)
+	err := model.DB.First(&productData, req.ProductId).Error
+	if err != nil {
+		return err
+	}
 	//序类化商品
 	productRes := BuildProduct(productData)
 	//序列化后的结果赋给response

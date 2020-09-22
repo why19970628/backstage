@@ -4,7 +4,7 @@
  * @Author: congz
  * @Date: 2020-09-15 10:57:26
  * @LastEditors: congz
- * @LastEditTime: 2020-09-21 16:21:08
+ * @LastEditTime: 2020-09-22 21:35:46
  */
 package serviceimpl
 
@@ -26,14 +26,13 @@ func BuildCarousel(item model.Carousel) *services.CarouselModel {
 	return &carouselModel
 }
 
-//OtherService 其他服务
-type OtherService struct {
-}
-
 //GetCarouselsList 实现其他服务接口 获取轮播图列表
 func (*OtherService) GetCarouselsList(context context.Context, req *services.CarouselRequest, res *services.CarouselsListResponse) error {
 	carouselData := []model.Carousel{}
-	model.DB.Find(&carouselData)
+	err := model.DB.Find(&carouselData).Error
+	if err != nil {
+		return err
+	}
 	carouselRes := []*services.CarouselModel{}
 	for _, item := range carouselData {
 		carouselRes = append(carouselRes, BuildCarousel(item))

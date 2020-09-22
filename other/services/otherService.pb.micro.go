@@ -36,6 +36,7 @@ var _ server.Option
 type OtherService interface {
 	GetCarouselsList(ctx context.Context, in *CarouselRequest, opts ...client.CallOption) (*CarouselsListResponse, error)
 	UpdateCarousel(ctx context.Context, in *CarouselRequest, opts ...client.CallOption) (*CarouselDetailResponse, error)
+	GetNotice(ctx context.Context, in *NoticeRequest, opts ...client.CallOption) (*NoticeDetailResponse, error)
 }
 
 type otherService struct {
@@ -76,17 +77,29 @@ func (c *otherService) UpdateCarousel(ctx context.Context, in *CarouselRequest, 
 	return out, nil
 }
 
+func (c *otherService) GetNotice(ctx context.Context, in *NoticeRequest, opts ...client.CallOption) (*NoticeDetailResponse, error) {
+	req := c.c.NewRequest(c.name, "OtherService.GetNotice", in)
+	out := new(NoticeDetailResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for OtherService service
 
 type OtherServiceHandler interface {
 	GetCarouselsList(context.Context, *CarouselRequest, *CarouselsListResponse) error
 	UpdateCarousel(context.Context, *CarouselRequest, *CarouselDetailResponse) error
+	GetNotice(context.Context, *NoticeRequest, *NoticeDetailResponse) error
 }
 
 func RegisterOtherServiceHandler(s server.Server, hdlr OtherServiceHandler, opts ...server.HandlerOption) error {
 	type otherService interface {
 		GetCarouselsList(ctx context.Context, in *CarouselRequest, out *CarouselsListResponse) error
 		UpdateCarousel(ctx context.Context, in *CarouselRequest, out *CarouselDetailResponse) error
+		GetNotice(ctx context.Context, in *NoticeRequest, out *NoticeDetailResponse) error
 	}
 	type OtherService struct {
 		otherService
@@ -105,4 +118,8 @@ func (h *otherServiceHandler) GetCarouselsList(ctx context.Context, in *Carousel
 
 func (h *otherServiceHandler) UpdateCarousel(ctx context.Context, in *CarouselRequest, out *CarouselDetailResponse) error {
 	return h.OtherServiceHandler.UpdateCarousel(ctx, in, out)
+}
+
+func (h *otherServiceHandler) GetNotice(ctx context.Context, in *NoticeRequest, out *NoticeDetailResponse) error {
+	return h.OtherServiceHandler.GetNotice(ctx, in, out)
 }

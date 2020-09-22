@@ -4,7 +4,7 @@
  * @Author: congz
  * @Date: 2020-06-10 11:11:17
  * @LastEditors: congz
- * @LastEditTime: 2020-09-21 14:10:10
+ * @LastEditTime: 2020-09-22 13:31:16
  */
 package model
 
@@ -20,6 +20,6 @@ type User struct {
 	PasswordDigest string
 	Nickname       string `gorm:"unique"`
 	Status         string
-	Limit          int
+	Limit          uint32
 	Avatar         string `gorm:"size:1000"`
 }
