@@ -4,7 +4,7 @@
  * @Author: congz
  * @Date: 2020-09-15 10:57:26
  * @LastEditors: congz
- * @LastEditTime: 2020-09-22 21:43:43
+ * @LastEditTime: 2020-09-26 18:33:37
  */
 package serviceimpl
 
@@ -42,10 +42,27 @@ func (*ProductService) GetProductsList(ctx context.Context, req *services.Produc
 	}
 	//在数据库查找值
 	productData := []model.Product{}
-	err := model.DB.Offset(req.Start).Limit(req.Limit).Find(&productData).Error
-	if err != nil {
-		return err
+	var count uint32
+	if req.CategoryID == 0 {
+		err := model.DB.Offset(req.Start).Limit(req.Limit).Find(&productData).Error
+		if err != nil {
+			return err
+		}
+		err = model.DB.Model(&model.Product{}).Count(&count).Error
+		if err != nil {
+			return err
+		}
+	} else {
+		err := model.DB.Offset(req.Start).Limit(req.Limit).Where("category_id=?", req.CategoryID).Find(&productData).Error
+		if err != nil {
+			return err
+		}
+		err = model.DB.Model(&model.Product{}).Where("category_id=?", req.CategoryID).Count(&count).Error
+		if err != nil {
+			return err
+		}
 	}
+
 	//序类化商品列表
 	productRes := []*services.ProductModel{}
 	for _, item := range productData {
@@ -53,6 +70,7 @@ func (*ProductService) GetProductsList(ctx context.Context, req *services.Produc
 	}
 	//序列化后的结果赋给response
 	res.ProductsList = productRes
+	res.Count = count
 	return nil
 }
 
@@ -60,7 +78,7 @@ func (*ProductService) GetProductsList(ctx context.Context, req *services.Produc
 func (*ProductService) GetProduct(ctx context.Context, req *services.ProductRequest, res *services.ProductDetailResponse) error {
 	//在数据库查找值
 	productData := model.Product{}
-	err := model.DB.First(&productData, req.ProductId).Error
+	err := model.DB.First(&productData, req.ProductID).Error
 	if err != nil {
 		return err
 	}

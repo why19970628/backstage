@@ -29,4 +29,19 @@ message NoticeModel{
 	int64 DeletedAt=5;
 }
 
-
+message CategoryModel{
+  // @inject_tag: json:"id"
+  uint32 ID=1;
+	// @inject_tag: json:"category_id"
+	uint32 CategoryID=2;
+	// @inject_tag: json:"category_name"
+	string CategoryName=3;
+	// @inject_tag: json:"num"
+	uint32 Num=4;
+	// @inject_tag: json:"created_at"
+	int64 CreatedAt=5;
+	// @inject_tag: json:"updated_at"
+	int64 UpdatedAt=6;
+	// @inject_tag: json:"deleted_at"
+	int64 DeletedAt=7;
+}

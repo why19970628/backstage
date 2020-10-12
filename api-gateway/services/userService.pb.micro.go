@@ -36,6 +36,7 @@ var _ server.Option
 type UserService interface {
 	AdminLogin(ctx context.Context, in *AdminRequest, opts ...client.CallOption) (*AdminDetailResponse, error)
 	GetUsersList(ctx context.Context, in *UserRequest, opts ...client.CallOption) (*UsersListResponse, error)
+	GetUser(ctx context.Context, in *UserRequest, opts ...client.CallOption) (*UserDetailResponse, error)
 }
 
 type userService struct {
@@ -76,17 +77,29 @@ func (c *userService) GetUsersList(ctx context.Context, in *UserRequest, opts ..
 	return out, nil
 }
 
+func (c *userService) GetUser(ctx context.Context, in *UserRequest, opts ...client.CallOption) (*UserDetailResponse, error) {
+	req := c.c.NewRequest(c.name, "UserService.GetUser", in)
+	out := new(UserDetailResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for UserService service
 
 type UserServiceHandler interface {
 	AdminLogin(context.Context, *AdminRequest, *AdminDetailResponse) error
 	GetUsersList(context.Context, *UserRequest, *UsersListResponse) error
+	GetUser(context.Context, *UserRequest, *UserDetailResponse) error
 }
 
 func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) error {
 	type userService interface {
 		AdminLogin(ctx context.Context, in *AdminRequest, out *AdminDetailResponse) error
 		GetUsersList(ctx context.Context, in *UserRequest, out *UsersListResponse) error
+		GetUser(ctx context.Context, in *UserRequest, out *UserDetailResponse) error
 	}
 	type UserService struct {
 		userService
@@ -105,4 +118,8 @@ func (h *userServiceHandler) AdminLogin(ctx context.Context, in *AdminRequest, o
 
 func (h *userServiceHandler) GetUsersList(ctx context.Context, in *UserRequest, out *UsersListResponse) error {
 	return h.UserServiceHandler.GetUsersList(ctx, in, out)
+}
+
+func (h *userServiceHandler) GetUser(ctx context.Context, in *UserRequest, out *UserDetailResponse) error {
+	return h.UserServiceHandler.GetUser(ctx, in, out)
 }

@@ -23,9 +23,15 @@ message UserRequest{
 }
 message UsersListResponse{
   repeated UserModel UsersList=1;
+  // @inject_tag: json:"count" 
+  uint32 Count=2;
+}
+message UserDetailResponse{
+  UserModel UserDetail=1;
 }
 
 service UserService{
   rpc AdminLogin(AdminRequest) returns(AdminDetailResponse);
   rpc GetUsersList(UserRequest) returns(UsersListResponse);
+  rpc GetUser(UserRequest) returns(UserDetailResponse);
 }

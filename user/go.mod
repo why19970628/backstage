@@ -3,6 +3,7 @@ module user
 go 1.14
 
 require (
+	github.com/aliyun/aliyun-oss-go-sdk v0.0.0-20190307165228-86c17b95fcd5
 	github.com/gin-gonic/gin v1.6.3
 	github.com/golang/protobuf v1.4.2
 	github.com/jinzhu/gorm v1.9.16

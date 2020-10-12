@@ -4,7 +4,7 @@
  * @Author: congz
  * @Date: 2020-09-20 11:33:37
  * @LastEditors: congz
- * @LastEditTime: 2020-09-22 21:45:34
+ * @LastEditTime: 2020-09-26 18:37:55
  */
 package handlers
 
@@ -23,7 +23,7 @@ func GetProductsList(ginCtx *gin.Context) {
 	productService := ginCtx.Keys["productService"].(services.ProductService)
 	//调用服务端的函数
 	productRes, _ := productService.GetProductsList(context.Background(), &productReq)
-	ginCtx.JSON(200, gin.H{"data": productRes.ProductsList})
+	ginCtx.JSON(200, gin.H{"data": gin.H{"product": productRes.ProductsList, "count": productRes.Count}})
 
 }
 

@@ -4,7 +4,7 @@
  * @Author: congz
  * @Date: 2020-09-15 10:57:26
  * @LastEditors: congz
- * @LastEditTime: 2020-09-22 21:51:35
+ * @LastEditTime: 2020-10-12 13:50:53
  */
 package serviceimpl
 
@@ -19,7 +19,7 @@ func BuildUser(item model.User) *services.UserModel {
 	userModel := services.UserModel{
 		ID:        uint32(item.ID),
 		UserName:  item.UserName,
-		Avatar:    item.Avatar,
+		Avatar:    item.AvatarURL(),
 		Email:     item.Email,
 		NickName:  item.Nickname,
 		Status:    item.Status,
@@ -37,16 +37,34 @@ func (*UserService) GetUsersList(ctx context.Context, req *services.UserRequest,
 	}
 	//在数据库查找值
 	userData := []model.User{}
+	var count uint32
 	err := model.DB.Offset(req.Start).Limit(req.Limit).Find(&userData).Error
 	if err != nil {
 		return err
 	}
-	//序类化用户列表
+	err = model.DB.Model(&model.User{}).Count(&count).Error
+	if err != nil {
+		return err
+	}
+	//序列化用户列表
 	userRes := []*services.UserModel{}
 	for _, item := range userData {
 		userRes = append(userRes, BuildUser(item))
 	}
 	//序列化后的结果赋给response
 	res.UsersList = userRes
+	res.Count = count
+	return nil
+}
+
+//GetUser 实现用户服务接口 获取用户详情
+func (*UserService) GetUser(ctx context.Context, req *services.UserRequest, res *services.UserDetailResponse) error {
+	userData := model.User{}
+	err := model.DB.First(&userData, req.UserID).Error
+	if err != nil {
+		return err
+	}
+	userRes := BuildUser(userData)
+	res.UserDetail = userRes
 	return nil
 }

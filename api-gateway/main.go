@@ -4,7 +4,7 @@
  * @Author: congz
  * @Date: 2020-09-20 11:30:37
  * @LastEditors: congz
- * @LastEditTime: 2020-09-21 16:39:27
+ * @LastEditTime: 2020-09-26 18:09:25
  */
 package main
 
@@ -50,7 +50,7 @@ func main() {
 	//创建微服务实例，使用gin暴露http接口并注册到consul
 	server := web.NewService(
 		web.Name("httpService"),
-		web.Address(":8000"),
+		web.Address(":4000"),
 		//将服务调用实例使用gin处理
 		web.Handler(weblib.NewRouter(productService, otherService, userService)),
 		web.Registry(consulReq),

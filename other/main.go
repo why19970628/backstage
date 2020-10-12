@@ -4,7 +4,7 @@
  * @Author: congz
  * @Date: 2020-09-15 11:09:52
  * @LastEditors: congz
- * @LastEditTime: 2020-09-21 16:29:07
+ * @LastEditTime: 2020-09-26 19:06:32
  */
 package main
 
@@ -27,7 +27,7 @@ func main() {
 	//创建微服务实例，并注册到consul
 	microService := micro.NewService(
 		micro.Name("rpcOtherService"),
-		micro.Address(":8081"),
+		micro.Address(":4002"),
 		micro.Registry(consulReg),
 	)
 	//接收命令行参数 如--server_address

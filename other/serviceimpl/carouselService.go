@@ -4,7 +4,7 @@
  * @Author: congz
  * @Date: 2020-09-15 10:57:26
  * @LastEditors: congz
- * @LastEditTime: 2020-09-22 21:35:46
+ * @LastEditTime: 2020-10-12 21:39:35
  */
 package serviceimpl
 
@@ -28,8 +28,16 @@ func BuildCarousel(item model.Carousel) *services.CarouselModel {
 
 //GetCarouselsList 实现其他服务接口 获取轮播图列表
 func (*OtherService) GetCarouselsList(context context.Context, req *services.CarouselRequest, res *services.CarouselsListResponse) error {
+	if req.Limit == 0 {
+		req.Limit = 10
+	}
 	carouselData := []model.Carousel{}
-	err := model.DB.Find(&carouselData).Error
+	var count uint32
+	err := model.DB.Offset(req.Start).Limit(req.Limit).Find(&carouselData).Error
+	if err != nil {
+		return err
+	}
+	err = model.DB.Model(&model.Carousel{}).Count(&count).Error
 	if err != nil {
 		return err
 	}
@@ -38,10 +46,33 @@ func (*OtherService) GetCarouselsList(context context.Context, req *services.Car
 		carouselRes = append(carouselRes, BuildCarousel(item))
 	}
 	res.CarouselsList = carouselRes
+	res.Count = count
+	return nil
+}
+
+//GetCarousel 实现其他服务接口 获取轮播图
+func (*OtherService) GetCarousel(context context.Context, req *services.CarouselRequest, res *services.CarouselDetailResponse) error {
+	carouselData := model.Carousel{}
+	err := model.DB.First(&carouselData, req.CarouselID).Error
+	if err != nil {
+		return err
+	}
+	res.CarouselDetail = BuildCarousel(carouselData)
 	return nil
 }
 
 //UpdateCarousel 实现其他服务接口 修改轮播图
 func (*OtherService) UpdateCarousel(context context.Context, req *services.CarouselRequest, res *services.CarouselDetailResponse) error {
+	carouselData := model.Carousel{}
+	err := model.DB.First(&carouselData, req.CarouselID).Error
+	if err != nil {
+		return err
+	}
+	carouselData.ImgPath = req.ImgPath
+	carouselData.ProductID = req.ProductID
+	err = model.DB.Save(&carouselData).Error
+	if err != nil {
+		return err
+	}
 	return nil
 }
