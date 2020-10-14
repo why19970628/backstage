@@ -163,6 +163,99 @@ func (x *ProductModel) GetDeletedAt() int64 {
 	return 0
 }
 
+type ProductImgModel struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// @inject_tag: json:"id"
+	ID uint32 `protobuf:"varint,1,opt,name=ID,proto3" json:"id"`
+	// @inject_tag: json:"product_id"
+	ProductID uint32 `protobuf:"varint,2,opt,name=ProductID,proto3" json:"product_id"`
+	// @inject_tag: json:"img_path"
+	ImgPath string `protobuf:"bytes,3,opt,name=ImgPath,proto3" json:"img_path"`
+	// @inject_tag: json:"created_at"
+	CreatedAt int64 `protobuf:"varint,9,opt,name=CreatedAt,proto3" json:"created_at"`
+	// @inject_tag: json:"updated_at"
+	UpdatedAt int64 `protobuf:"varint,10,opt,name=UpdatedAt,proto3" json:"updated_at"`
+	// @inject_tag: json:"deleted_at"
+	DeletedAt int64 `protobuf:"varint,11,opt,name=DeletedAt,proto3" json:"deleted_at"`
+}
+
+func (x *ProductImgModel) Reset() {
+	*x = ProductImgModel{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_productModels_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ProductImgModel) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ProductImgModel) ProtoMessage() {}
+
+func (x *ProductImgModel) ProtoReflect() protoreflect.Message {
+	mi := &file_productModels_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ProductImgModel.ProtoReflect.Descriptor instead.
+func (*ProductImgModel) Descriptor() ([]byte, []int) {
+	return file_productModels_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *ProductImgModel) GetID() uint32 {
+	if x != nil {
+		return x.ID
+	}
+	return 0
+}
+
+func (x *ProductImgModel) GetProductID() uint32 {
+	if x != nil {
+		return x.ProductID
+	}
+	return 0
+}
+
+func (x *ProductImgModel) GetImgPath() string {
+	if x != nil {
+		return x.ImgPath
+	}
+	return ""
+}
+
+func (x *ProductImgModel) GetCreatedAt() int64 {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return 0
+}
+
+func (x *ProductImgModel) GetUpdatedAt() int64 {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return 0
+}
+
+func (x *ProductImgModel) GetDeletedAt() int64 {
+	if x != nil {
+		return x.DeletedAt
+	}
+	return 0
+}
+
 var File_productModels_proto protoreflect.FileDescriptor
 
 var file_productModels_proto_rawDesc = []byte{
@@ -186,8 +279,19 @@ var file_productModels_proto_rawDesc = []byte{
 	0x41, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x18,
 	0x0a, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74,
 	0x12, 0x1c, 0x0a, 0x09, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x64, 0x41, 0x74, 0x18, 0x0b, 0x20,
-	0x01, 0x28, 0x03, 0x52, 0x09, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x64, 0x41, 0x74, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x01, 0x28, 0x03, 0x52, 0x09, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x64, 0x41, 0x74, 0x22, 0xb3,
+	0x01, 0x0a, 0x0f, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x49, 0x6d, 0x67, 0x4d, 0x6f, 0x64,
+	0x65, 0x6c, 0x12, 0x0e, 0x0a, 0x02, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x02,
+	0x49, 0x44, 0x12, 0x1c, 0x0a, 0x09, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x49, 0x44, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x09, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x49, 0x44,
+	0x12, 0x18, 0x0a, 0x07, 0x49, 0x6d, 0x67, 0x50, 0x61, 0x74, 0x68, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x07, 0x49, 0x6d, 0x67, 0x50, 0x61, 0x74, 0x68, 0x12, 0x1c, 0x0a, 0x09, 0x43, 0x72,
+	0x65, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x18, 0x09, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x43,
+	0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x55, 0x70, 0x64, 0x61,
+	0x74, 0x65, 0x64, 0x41, 0x74, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x55, 0x70, 0x64,
+	0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65,
+	0x64, 0x41, 0x74, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x44, 0x65, 0x6c, 0x65, 0x74,
+	0x65, 0x64, 0x41, 0x74, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -202,9 +306,10 @@ func file_productModels_proto_rawDescGZIP() []byte {
 	return file_productModels_proto_rawDescData
 }
 
-var file_productModels_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_productModels_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_productModels_proto_goTypes = []interface{}{
-	(*ProductModel)(nil), // 0: services.ProductModel
+	(*ProductModel)(nil),    // 0: services.ProductModel
+	(*ProductImgModel)(nil), // 1: services.ProductImgModel
 }
 var file_productModels_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -232,6 +337,18 @@ func file_productModels_proto_init() {
 				return nil
 			}
 		}
+		file_productModels_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ProductImgModel); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -239,7 +356,7 @@ func file_productModels_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_productModels_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

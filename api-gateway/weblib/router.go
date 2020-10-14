@@ -4,7 +4,7 @@
  * @Author: congz
  * @Date: 2020-09-20 11:33:37
  * @LastEditors: congz
- * @LastEditTime: 2020-10-12 22:33:04
+ * @LastEditTime: 2020-10-14 20:20:50
  */
 package weblib
 
@@ -22,12 +22,17 @@ func NewRouter(service ...interface{}) *gin.Engine {
 	ginRouter.Use(middlewares.Cors(), middlewares.InitMiddleware(service), middlewares.ErrorMiddleware())
 	v1 := ginRouter.Group("/api/v1")
 	{
-		//需要登录验证
-		authed := v1.Group("/")
-		{
-			authed.GET("/products", handlers.GetProductsList)
-			authed.GET("/products/:product_id", handlers.GetProductDetail)
-		}
+		//商品服务
+		v1.POST("/products", handlers.CreateProduct)
+		v1.GET("/products", handlers.GetProductsList)
+		v1.GET("/products/:product_id", handlers.GetProductDetail)
+		v1.PUT("/products", handlers.UpdateProduct)
+		v1.DELETE("/products", handlers.DeleteProduct)
+		//商品图片
+		v1.POST("/product-imgs", handlers.CreateProductImg)
+		v1.GET("/product-imgs", handlers.GetProductImgsList)
+		v1.PUT("/product-imgs", handlers.UpdateProductImg)
+		v1.DELETE("/product-imgs", handlers.DeleteProductImg)
 		//轮播图服务
 		v1.GET("/carousels", handlers.GetCarouselsList)
 		v1.GET("/carousels/:carousel_id", handlers.GetCarousel)

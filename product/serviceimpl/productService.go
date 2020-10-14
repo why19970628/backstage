@@ -4,7 +4,7 @@
  * @Author: congz
  * @Date: 2020-09-15 10:57:26
  * @LastEditors: congz
- * @LastEditTime: 2020-09-26 18:33:37
+ * @LastEditTime: 2020-10-14 12:42:53
  */
 package serviceimpl
 
@@ -14,25 +14,25 @@ import (
 	"product/services"
 )
 
-//BuildProduct 序列化商品
-func BuildProduct(item model.Product) *services.ProductModel {
-	productModel := services.ProductModel{
-		ID:            uint32(item.ID),
-		Name:          item.Name,
-		CategoryID:    item.CategoryID,
-		Title:         item.Title,
-		Info:          item.Info,
-		ImgPath:       item.ImgPath,
-		Price:         item.Price,
-		DiscountPrice: item.DiscountPrice,
-		CreatedAt:     item.CreatedAt.Unix(),
-		UpdatedAt:     item.UpdatedAt.Unix(),
+//CreateProduct 实现商品服务接口 创建商品
+func (*ProductService) CreateProduct(ctx context.Context, req *services.ProductRequest, res *services.ProductDetailResponse) error {
+	//在数据库查找值
+	productData := model.Product{
+		CategoryID:    req.CategoryID,
+		Name:          req.Name,
+		Title:         req.Title,
+		Info:          req.Info,
+		ImgPath:       req.ImgPath,
+		Price:         req.Price,
+		DiscountPrice: req.DiscountPrice,
 	}
-	return &productModel
-}
-
-//ProductService 商品服务
-type ProductService struct {
+	err := model.DB.Create(&productData).Error
+	if err != nil {
+		return err
+	}
+	//序列化后的结果赋给response
+	res.ProductDetail = BuildProduct(productData)
+	return nil
 }
 
 //GetProductsList 实现商品服务接口 获取商品列表
@@ -86,5 +86,41 @@ func (*ProductService) GetProduct(ctx context.Context, req *services.ProductRequ
 	productRes := BuildProduct(productData)
 	//序列化后的结果赋给response
 	res.ProductDetail = productRes
+	return nil
+}
+
+//UpdateProduct 实现商品服务接口 修改商品详情
+func (*ProductService) UpdateProduct(ctx context.Context, req *services.ProductRequest, res *services.ProductDetailResponse) error {
+	//在数据库查找值
+	productData := model.Product{}
+	err := model.DB.First(&productData, req.ProductID).Error
+	if err != nil {
+		return err
+	}
+	//将要更新的数据赋值给结构体
+	productData.CategoryID = req.CategoryID
+	productData.Name = req.Name
+	productData.Title = req.Title
+	productData.Info = req.Info
+	productData.ImgPath = req.ImgPath
+	productData.Price = req.Price
+	productData.DiscountPrice = req.DiscountPrice
+	//update
+	err = model.DB.Save(&productData).Error
+	if err != nil {
+		return err
+	}
+	//序列化后的结果赋给response
+	res.ProductDetail = BuildProduct(productData)
+	return nil
+}
+
+//DeleteProduct 实现商品服务接口 删除商品
+func (*ProductService) DeleteProduct(ctx context.Context, req *services.ProductRequest, res *services.ProductDetailResponse) error {
+	//在数据库删除值
+	err := model.DB.Delete(&model.Product{}, req.ProductID).Error
+	if err != nil {
+		return err
+	}
 	return nil
 }
