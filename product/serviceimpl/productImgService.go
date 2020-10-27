@@ -4,12 +4,13 @@
  * @Author: congz
  * @Date: 2020-09-15 10:57:26
  * @LastEditors: congz
- * @LastEditTime: 2020-10-14 12:44:35
+ * @LastEditTime: 2020-10-27 13:48:48
  */
 package serviceimpl
 
 import (
 	"context"
+	"errors"
 	"product/model"
 	"product/services"
 )
@@ -23,6 +24,7 @@ func (*ProductService) CreateProductImg(ctx context.Context, req *services.Produ
 			ImgPath:   req.ImgPath,
 		}
 		if err := model.DB.Create(&productImgData).Error; err != nil {
+			err = errors.New("mysql err:" + err.Error())
 			return err
 		}
 		res.ProductImgDetail = BuildProductImg(productImgData)
@@ -33,6 +35,7 @@ func (*ProductService) CreateProductImg(ctx context.Context, req *services.Produ
 			ImgPath:   req.ImgPath,
 		}
 		if err := model.DB.Create(&productImgData).Error; err != nil {
+			err = errors.New("mysql err:" + err.Error())
 			return err
 		}
 		res.ProductImgDetail = BuildProductInfoImg(productImgData)
@@ -43,12 +46,13 @@ func (*ProductService) CreateProductImg(ctx context.Context, req *services.Produ
 			ImgPath:   req.ImgPath,
 		}
 		if err := model.DB.Create(&productImgData).Error; err != nil {
+			err = errors.New("mysql err:" + err.Error())
 			return err
 		}
 		res.ProductImgDetail = BuildProductParamImg(productImgData)
 		return nil
 	default:
-		return nil
+		return errors.New("type err: 没有此类型")
 	}
 }
 
@@ -62,11 +66,14 @@ func (*ProductService) GetProductImgsList(ctx context.Context, req *services.Pro
 		var productImgData []model.ProductImg
 		var count uint32
 		if err := model.DB.Offset(req.Start).Limit(req.Limit).Where("product_id=?", req.ProductID).Find(&productImgData).Error; err != nil {
+			err = errors.New("mysql err:" + err.Error())
 			return err
 		}
 		if err := model.DB.Model(&model.ProductImg{}).Where("product_id=?", req.ProductID).Count(&count).Error; err != nil {
+			err = errors.New("mysql err:" + err.Error())
 			return err
 		}
+
 		//序类化商品图片列表
 		productImgRes := []*services.ProductImgModel{}
 		for _, item := range productImgData {
@@ -80,9 +87,11 @@ func (*ProductService) GetProductImgsList(ctx context.Context, req *services.Pro
 		var productImgData []model.ProductInfoImg
 		var count uint32
 		if err := model.DB.Offset(req.Start).Limit(req.Limit).Where("product_id=?", req.ProductID).Find(&productImgData).Error; err != nil {
+			err = errors.New("mysql err:" + err.Error())
 			return err
 		}
 		if err := model.DB.Model(&model.ProductInfoImg{}).Where("product_id=?", req.ProductID).Count(&count).Error; err != nil {
+			err = errors.New("mysql err:" + err.Error())
 			return err
 		}
 		//序类化商品图片列表
@@ -98,9 +107,11 @@ func (*ProductService) GetProductImgsList(ctx context.Context, req *services.Pro
 		var productImgData []model.ProductParamImg
 		var count uint32
 		if err := model.DB.Offset(req.Start).Limit(req.Limit).Where("product_id=?", req.ProductID).Find(&productImgData).Error; err != nil {
+			err = errors.New("mysql err:" + err.Error())
 			return err
 		}
 		if err := model.DB.Model(&model.ProductParamImg{}).Where("product_id=?", req.ProductID).Count(&count).Error; err != nil {
+			err = errors.New("mysql err:" + err.Error())
 			return err
 		}
 		//序类化商品图片列表
@@ -113,7 +124,7 @@ func (*ProductService) GetProductImgsList(ctx context.Context, req *services.Pro
 		res.Count = count
 		return nil
 	default:
-		return nil
+		return errors.New("type err: 没有此类型")
 	}
 
 }
@@ -126,6 +137,7 @@ func (*ProductService) UpdateProductImg(ctx context.Context, req *services.Produ
 		productImgData := model.ProductImg{}
 		err := model.DB.First(&productImgData, req.ImgID).Error
 		if err != nil {
+			err = errors.New("mysql err:" + err.Error())
 			return err
 		}
 		//将要更新的数据赋值给结构体
@@ -133,6 +145,7 @@ func (*ProductService) UpdateProductImg(ctx context.Context, req *services.Produ
 		//update
 		err = model.DB.Save(&productImgData).Error
 		if err != nil {
+			err = errors.New("mysql err:" + err.Error())
 			return err
 		}
 		//序类化商品
@@ -143,6 +156,7 @@ func (*ProductService) UpdateProductImg(ctx context.Context, req *services.Produ
 		productImgData := model.ProductInfoImg{}
 		err := model.DB.First(&productImgData, req.ImgID).Error
 		if err != nil {
+			err = errors.New("mysql err:" + err.Error())
 			return err
 		}
 		//将要更新的数据赋值给结构体
@@ -150,6 +164,7 @@ func (*ProductService) UpdateProductImg(ctx context.Context, req *services.Produ
 		//update
 		err = model.DB.Save(&productImgData).Error
 		if err != nil {
+			err = errors.New("mysql err:" + err.Error())
 			return err
 		}
 		//序类化商品
@@ -160,6 +175,7 @@ func (*ProductService) UpdateProductImg(ctx context.Context, req *services.Produ
 		productImgData := model.ProductParamImg{}
 		err := model.DB.First(&productImgData, req.ImgID).Error
 		if err != nil {
+			err = errors.New("mysql err:" + err.Error())
 			return err
 		}
 		//将要更新的数据赋值给结构体
@@ -167,13 +183,14 @@ func (*ProductService) UpdateProductImg(ctx context.Context, req *services.Produ
 		//update
 		err = model.DB.Save(&productImgData).Error
 		if err != nil {
+			err = errors.New("mysql err:" + err.Error())
 			return err
 		}
 		//序类化商品
 		res.ProductImgDetail = BuildProductParamImg(productImgData)
 		return nil
 	default:
-		return nil
+		return errors.New("type err: 没有此类型")
 	}
 }
 
@@ -184,6 +201,7 @@ func (*ProductService) DeleteProductImg(ctx context.Context, req *services.Produ
 		//在数据库删除值
 		err := model.DB.Delete(&model.ProductImg{}, req.ImgID).Error
 		if err != nil {
+			err = errors.New("mysql err:" + err.Error())
 			return err
 		}
 		return nil
@@ -191,6 +209,7 @@ func (*ProductService) DeleteProductImg(ctx context.Context, req *services.Produ
 		//在数据库删除值
 		err := model.DB.Delete(&model.ProductInfoImg{}, req.ImgID).Error
 		if err != nil {
+			err = errors.New("mysql err:" + err.Error())
 			return err
 		}
 		return nil
@@ -198,10 +217,11 @@ func (*ProductService) DeleteProductImg(ctx context.Context, req *services.Produ
 		//在数据库删除值
 		err := model.DB.Delete(&model.ProductParamImg{}, req.ImgID).Error
 		if err != nil {
+			err = errors.New("mysql err:" + err.Error())
 			return err
 		}
 		return nil
 	default:
-		return nil
+		return errors.New("type err: 没有此类型")
 	}
 }

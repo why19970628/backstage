@@ -18,9 +18,9 @@ api-gateway(网关)是使用 gin 实现，包含暴露 HTTP、负载均衡、熔
 
 ## 项目进度
 
-后端：目前仅完成了各模块的基本功能
+后端：完成了各模块的基本功能,在创建商品功能使用了消息队列
 
-前端：使用 vue 实现了简单的界面，暂未与后端进行交互
+前端：使用 vue 实现了简单的界面
 
 ## 项目依赖
 
@@ -33,6 +33,7 @@ api-gateway(网关)是使用 gin 实现，包含暴露 HTTP、负载均衡、熔
 - godotenv
 - jwt-go
 - protobuf
+- rabbitMQ
 
 ## 目录结构
 
@@ -43,6 +44,10 @@ backstage/
 │	├── services
 │	├── weblib
 │	├── wrappers
+├── mq-server
+│	├── conf
+│	├── model
+│	├── service
 ├── other
 │	├── conf
 │	├── model
@@ -69,4 +74,4 @@ backstage/
 
 `go run main.go`
 
-项目运行后启动在 8000，8080，8081，8082 端口
+项目运行后启动在 4000，4001，4002，4003 端口

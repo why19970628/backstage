@@ -4,34 +4,44 @@
  * @Author: congz
  * @Date: 2020-09-15 10:57:26
  * @LastEditors: congz
- * @LastEditTime: 2020-10-14 12:42:53
+ * @LastEditTime: 2020-10-27 13:45:20
  */
 package serviceimpl
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
+	"log"
 	"product/model"
 	"product/services"
+
+	"github.com/streadway/amqp"
 )
 
-//CreateProduct 实现商品服务接口 创建商品
+//CreateProduct 实现商品服务接口 创建商品 使用RabbitMQ消息队列
 func (*ProductService) CreateProduct(ctx context.Context, req *services.ProductRequest, res *services.ProductDetailResponse) error {
-	//在数据库查找值
-	productData := model.Product{
-		CategoryID:    req.CategoryID,
-		Name:          req.Name,
-		Title:         req.Title,
-		Info:          req.Info,
-		ImgPath:       req.ImgPath,
-		Price:         req.Price,
-		DiscountPrice: req.DiscountPrice,
-	}
-	err := model.DB.Create(&productData).Error
+	ch, err := model.MQ.Channel()
 	if err != nil {
+		err = errors.New("rabbitMQ err:" + err.Error())
 		return err
 	}
-	//序列化后的结果赋给response
-	res.ProductDetail = BuildProduct(productData)
+	q, err := ch.QueueDeclare("product_queue", true, false, false, false, nil)
+	if err != nil {
+		err = errors.New("rabbitMQ err:" + err.Error())
+		return err
+	}
+	body, _ := json.Marshal(req)
+	err = ch.Publish("", q.Name, false, false, amqp.Publishing{
+		DeliveryMode: amqp.Persistent,
+		ContentType:  "application/json",
+		Body:         body,
+	})
+	if err != nil {
+		err = errors.New("rabbitMQ err:" + err.Error())
+		return err
+	}
+	log.Printf("Sent %s", body)
 	return nil
 }
 
@@ -46,19 +56,23 @@ func (*ProductService) GetProductsList(ctx context.Context, req *services.Produc
 	if req.CategoryID == 0 {
 		err := model.DB.Offset(req.Start).Limit(req.Limit).Find(&productData).Error
 		if err != nil {
+			err = errors.New("mysql err:" + err.Error())
 			return err
 		}
 		err = model.DB.Model(&model.Product{}).Count(&count).Error
 		if err != nil {
+			err = errors.New("mysql err:" + err.Error())
 			return err
 		}
 	} else {
 		err := model.DB.Offset(req.Start).Limit(req.Limit).Where("category_id=?", req.CategoryID).Find(&productData).Error
 		if err != nil {
+			err = errors.New("mysql err:" + err.Error())
 			return err
 		}
 		err = model.DB.Model(&model.Product{}).Where("category_id=?", req.CategoryID).Count(&count).Error
 		if err != nil {
+			err = errors.New("mysql err:" + err.Error())
 			return err
 		}
 	}
@@ -80,6 +94,7 @@ func (*ProductService) GetProduct(ctx context.Context, req *services.ProductRequ
 	productData := model.Product{}
 	err := model.DB.First(&productData, req.ProductID).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	//序类化商品
@@ -95,6 +110,7 @@ func (*ProductService) UpdateProduct(ctx context.Context, req *services.ProductR
 	productData := model.Product{}
 	err := model.DB.First(&productData, req.ProductID).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	//将要更新的数据赋值给结构体
@@ -108,6 +124,7 @@ func (*ProductService) UpdateProduct(ctx context.Context, req *services.ProductR
 	//update
 	err = model.DB.Save(&productData).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	//序列化后的结果赋给response
@@ -120,6 +137,7 @@ func (*ProductService) DeleteProduct(ctx context.Context, req *services.ProductR
 	//在数据库删除值
 	err := model.DB.Delete(&model.Product{}, req.ProductID).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	return nil

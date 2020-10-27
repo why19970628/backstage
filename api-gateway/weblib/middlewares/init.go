@@ -4,7 +4,7 @@
  * @Author: congz
  * @Date: 2020-09-20 11:33:37
  * @LastEditors: congz
- * @LastEditTime: 2020-09-21 16:27:22
+ * @LastEditTime: 2020-10-27 13:37:19
  */
 package middlewares
 
@@ -31,7 +31,7 @@ func ErrorMiddleware() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		defer func() {
 			if r := recover(); r != nil {
-				context.JSON(500, gin.H{"status": fmt.Sprintf("%s", r)})
+				context.JSON(200, gin.H{"code": 404, "msg": "服务器错误", "status": fmt.Sprintf("%s", r)})
 				context.Abort()
 			}
 		}()

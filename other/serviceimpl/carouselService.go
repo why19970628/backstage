@@ -4,12 +4,13 @@
  * @Author: congz
  * @Date: 2020-09-15 10:57:26
  * @LastEditors: congz
- * @LastEditTime: 2020-10-12 21:39:35
+ * @LastEditTime: 2020-10-27 13:58:33
  */
 package serviceimpl
 
 import (
 	"context"
+	"errors"
 	"other/model"
 	"other/services"
 )
@@ -35,10 +36,12 @@ func (*OtherService) GetCarouselsList(context context.Context, req *services.Car
 	var count uint32
 	err := model.DB.Offset(req.Start).Limit(req.Limit).Find(&carouselData).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	err = model.DB.Model(&model.Carousel{}).Count(&count).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	carouselRes := []*services.CarouselModel{}
@@ -55,6 +58,7 @@ func (*OtherService) GetCarousel(context context.Context, req *services.Carousel
 	carouselData := model.Carousel{}
 	err := model.DB.First(&carouselData, req.CarouselID).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	res.CarouselDetail = BuildCarousel(carouselData)
@@ -66,12 +70,14 @@ func (*OtherService) UpdateCarousel(context context.Context, req *services.Carou
 	carouselData := model.Carousel{}
 	err := model.DB.First(&carouselData, req.CarouselID).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	carouselData.ImgPath = req.ImgPath
 	carouselData.ProductID = req.ProductID
 	err = model.DB.Save(&carouselData).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	return nil

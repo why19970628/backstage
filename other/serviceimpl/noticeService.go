@@ -4,12 +4,13 @@
  * @Author: congz
  * @Date: 2020-09-15 10:57:26
  * @LastEditors: congz
- * @LastEditTime: 2020-10-12 16:44:43
+ * @LastEditTime: 2020-10-27 13:59:16
  */
 package serviceimpl
 
 import (
 	"context"
+	"errors"
 	"other/model"
 	"other/services"
 )
@@ -32,6 +33,7 @@ func (*OtherService) CreateNotice(ctx context.Context, req *services.NoticeReque
 	}
 	err := model.DB.Create(&noticeData).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	res.NoticeDetail = BuildNotice(noticeData)
@@ -43,6 +45,7 @@ func (*OtherService) GetNotice(ctx context.Context, req *services.NoticeRequest,
 	noticeData := model.Notice{}
 	err := model.DB.First(&noticeData, req.NoticeID).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	res.NoticeDetail = BuildNotice(noticeData)
@@ -54,11 +57,13 @@ func (*OtherService) UpdateNotice(ctx context.Context, req *services.NoticeReque
 	noticeData := model.Notice{}
 	err := model.DB.First(&noticeData, req.NoticeID).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	noticeData.Text = req.Text
 	err = model.DB.Save(&noticeData).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	return nil
@@ -68,6 +73,7 @@ func (*OtherService) UpdateNotice(ctx context.Context, req *services.NoticeReque
 func (*OtherService) DeleteNotice(ctx context.Context, req *services.NoticeRequest, res *services.NoticeDetailResponse) error {
 	err := model.DB.Delete(&model.Notice{}, req.NoticeID).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	return nil

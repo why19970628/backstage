@@ -9,8 +9,8 @@
 package conf
 
 import (
+	"mq-server/model"
 	"os"
-	"product/model"
 
 	"github.com/joho/godotenv"
 )

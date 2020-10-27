@@ -4,12 +4,13 @@
  * @Author: congz
  * @Date: 2020-09-15 10:57:26
  * @LastEditors: congz
- * @LastEditTime: 2020-10-12 13:50:53
+ * @LastEditTime: 2020-10-27 13:55:44
  */
 package serviceimpl
 
 import (
 	"context"
+	"errors"
 	"user/model"
 	"user/services"
 )
@@ -40,10 +41,12 @@ func (*UserService) GetUsersList(ctx context.Context, req *services.UserRequest,
 	var count uint32
 	err := model.DB.Offset(req.Start).Limit(req.Limit).Find(&userData).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	err = model.DB.Model(&model.User{}).Count(&count).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	//序列化用户列表
@@ -62,6 +65,7 @@ func (*UserService) GetUser(ctx context.Context, req *services.UserRequest, res 
 	userData := model.User{}
 	err := model.DB.First(&userData, req.UserID).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	userRes := BuildUser(userData)

@@ -4,12 +4,13 @@
  * @Author: congz
  * @Date: 2020-09-15 10:57:26
  * @LastEditors: congz
- * @LastEditTime: 2020-10-12 22:22:09
+ * @LastEditTime: 2020-10-27 13:58:59
  */
 package serviceimpl
 
 import (
 	"context"
+	"errors"
 	"other/model"
 	"other/services"
 )
@@ -36,6 +37,7 @@ func (*OtherService) CreateCategory(context context.Context, req *services.Categ
 	}
 	err := model.DB.Create(&categoryData).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	res.CategoryDetail = BuildCategory(categoryData)
@@ -51,10 +53,12 @@ func (*OtherService) GetCategoriesList(context context.Context, req *services.Ca
 	var count uint32
 	err := model.DB.Offset(req.Start).Limit(req.Limit).Find(&categoryData).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	err = model.DB.Model(&model.Category{}).Count(&count).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	categoryRes := []*services.CategoryModel{}
@@ -76,6 +80,7 @@ func (*OtherService) UpdateCategory(context context.Context, req *services.Categ
 	categoryData := model.Category{}
 	err := model.DB.First(&categoryData, req.ID).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	categoryData.CategoryID = req.CategoryID
@@ -83,6 +88,7 @@ func (*OtherService) UpdateCategory(context context.Context, req *services.Categ
 	categoryData.Num = req.Num
 	err = model.DB.Save(&categoryData).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	return nil
@@ -92,6 +98,7 @@ func (*OtherService) UpdateCategory(context context.Context, req *services.Categ
 func (*OtherService) DeleteCategory(context context.Context, req *services.CategoryRequest, res *services.CategoryDetailResponse) error {
 	err := model.DB.Delete(&model.Category{}, req.ID).Error
 	if err != nil {
+		err = errors.New("mysql err:" + err.Error())
 		return err
 	}
 	return nil

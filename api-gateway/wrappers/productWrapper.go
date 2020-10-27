@@ -4,7 +4,7 @@
  * @Author: congz
  * @Date: 2020-09-15 22:22:40
  * @LastEditors: congz
- * @LastEditTime: 2020-09-21 16:43:46
+ * @LastEditTime: 2020-10-27 13:00:15
  */
 package wrappers
 
@@ -57,7 +57,7 @@ type ProductWrapper struct {
 }
 
 //Call Wrapper中间件的执行方法
-func (this *ProductWrapper) Call(ctx context.Context, req client.Request, rsp interface{}, opts ...client.CallOption) error {
+func (wrapper *ProductWrapper) Call(ctx context.Context, req client.Request, rsp interface{}, opts ...client.CallOption) error {
 	cmdName := req.Service() + "." + req.Endpoint()
 	config := hystrix.CommandConfig{
 		Timeout:                3000,
@@ -67,11 +67,12 @@ func (this *ProductWrapper) Call(ctx context.Context, req client.Request, rsp in
 	}
 	hystrix.ConfigureCommand(cmdName, config)
 	return hystrix.Do(cmdName, func() error {
-		return this.Client.Call(ctx, req, rsp)
-	}, func(e error) error {
+		return wrapper.Client.Call(ctx, req, rsp)
+	}, func(err error) error {
+		//降级处理
 		//DefaultProducts(rsp)
-		DefaultData(rsp)
-		return nil
+		//DefaultData(rsp)
+		return err
 	})
 }
 

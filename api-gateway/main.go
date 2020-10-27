@@ -4,7 +4,7 @@
  * @Author: congz
  * @Date: 2020-09-20 11:30:37
  * @LastEditors: congz
- * @LastEditTime: 2020-09-26 18:09:25
+ * @LastEditTime: 2020-10-27 14:04:58
  */
 package main
 
@@ -37,13 +37,14 @@ func main() {
 
 	otherMicroService := micro.NewService(
 		micro.Name("carouselService.client"),
-		micro.WrapClient(wrappers.NewCarouselWrapper),
+		micro.WrapClient(wrappers.NewOtherWrapper),
 	)
 	//轮播图服务调用实例
 	otherService := services.NewOtherService("rpcOtherService", otherMicroService.Client())
 
 	userMicroService := micro.NewService(
 		micro.Name("userService.client"),
+		micro.WrapClient(wrappers.NewUserWrapper),
 	)
 	//用户服务调用实例
 	userService := services.NewUserService("rpcUserService", userMicroService.Client())

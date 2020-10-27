@@ -4,7 +4,7 @@
  * @Author: congz
  * @Date: 2020-09-20 11:33:37
  * @LastEditors: congz
- * @LastEditTime: 2020-09-21 15:42:07
+ * @LastEditTime: 2020-10-27 13:35:50
  */
 package handlers
 
@@ -20,7 +20,7 @@ import (
 //AdminLogin 使用rpc进行管理员登录
 func AdminLogin(ginCtx *gin.Context) {
 	var adminReq services.AdminRequest
-	PanicIfError(ginCtx.Bind(&adminReq))
+	PanicIfUserError(ginCtx.Bind(&adminReq))
 	//从gin.keys取出服务实例
 	userService := ginCtx.Keys["userService"].(services.UserService)
 	//调用服务端的函数
