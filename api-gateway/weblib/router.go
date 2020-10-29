@@ -4,7 +4,7 @@
  * @Author: congz
  * @Date: 2020-09-20 11:33:37
  * @LastEditors: congz
- * @LastEditTime: 2020-10-14 20:20:50
+ * @LastEditTime: 2020-10-29 14:57:15
  */
 package weblib
 
@@ -22,35 +22,48 @@ func NewRouter(service ...interface{}) *gin.Engine {
 	ginRouter.Use(middlewares.Cors(), middlewares.InitMiddleware(service), middlewares.ErrorMiddleware())
 	v1 := ginRouter.Group("/api/v1")
 	{
-		//商品服务
-		v1.POST("/products", handlers.CreateProduct)
-		v1.GET("/products", handlers.GetProductsList)
-		v1.GET("/products/:product_id", handlers.GetProductDetail)
-		v1.PUT("/products", handlers.UpdateProduct)
-		v1.DELETE("/products", handlers.DeleteProduct)
-		//商品图片
-		v1.POST("/product-imgs", handlers.CreateProductImg)
-		v1.GET("/product-imgs", handlers.GetProductImgsList)
-		v1.PUT("/product-imgs", handlers.UpdateProductImg)
-		v1.DELETE("/product-imgs", handlers.DeleteProductImg)
-		//轮播图服务
-		v1.GET("/carousels", handlers.GetCarouselsList)
-		v1.GET("/carousels/:carousel_id", handlers.GetCarousel)
-		v1.PUT("/carousels", handlers.UpdateCarousel)
-		//公告服务
-		v1.POST("/notices", handlers.CreateNotice)
-		v1.GET("/notices/:notice_id", handlers.GetNotice)
-		v1.PUT("/notices", handlers.UpdateNotice)
-		v1.DELETE("/notices", handlers.DeleteNotice)
-		//分类服务
-		v1.POST("/categories", handlers.CreateCategory)
-		v1.GET("/categories", handlers.GetCategoriesList)
-		v1.PUT("/categories", handlers.UpdateCategory)
-		v1.DELETE("/categories", handlers.DeleteCategory)
 		//用户服务
 		v1.POST("/admins", handlers.AdminLogin)
-		v1.GET("/users", handlers.GetUsersList)
-		v1.GET("/users/:user_id", handlers.GetUser)
+		// 需要登录保护的
+		authed := v1.Group("/")
+		authed.Use(middlewares.JWT())
+		{
+			//用户服务
+			//验证token
+			authed.GET("ping", func(c *gin.Context) {
+				c.JSON(200, gin.H{
+					"code": 200,
+					"msg":  "success",
+				})
+			})
+			authed.GET("/users", handlers.GetUsersList)
+			authed.GET("/users/:user_id", handlers.GetUser)
+			//商品服务
+			authed.POST("/products", handlers.CreateProduct)
+			authed.GET("/products", handlers.GetProductsList)
+			authed.GET("/products/:product_id", handlers.GetProductDetail)
+			authed.PUT("/products", handlers.UpdateProduct)
+			authed.DELETE("/products", handlers.DeleteProduct)
+			//商品图片
+			authed.POST("/product-imgs", handlers.CreateProductImg)
+			authed.GET("/product-imgs", handlers.GetProductImgsList)
+			authed.PUT("/product-imgs", handlers.UpdateProductImg)
+			authed.DELETE("/product-imgs", handlers.DeleteProductImg)
+			//轮播图服务
+			authed.GET("/carousels", handlers.GetCarouselsList)
+			authed.GET("/carousels/:carousel_id", handlers.GetCarousel)
+			authed.PUT("/carousels", handlers.UpdateCarousel)
+			//公告服务
+			authed.POST("/notices", handlers.CreateNotice)
+			authed.GET("/notices/:notice_id", handlers.GetNotice)
+			authed.PUT("/notices", handlers.UpdateNotice)
+			authed.DELETE("/notices", handlers.DeleteNotice)
+			//分类服务
+			authed.POST("/categories", handlers.CreateCategory)
+			authed.GET("/categories", handlers.GetCategoriesList)
+			authed.PUT("/categories", handlers.UpdateCategory)
+			authed.DELETE("/categories", handlers.DeleteCategory)
+		}
 	}
 	return ginRouter
 }
