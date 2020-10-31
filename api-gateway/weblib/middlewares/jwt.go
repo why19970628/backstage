@@ -4,7 +4,7 @@
  * @Author: congz
  * @Date: 2020-07-15 14:48:46
  * @LastEditors: congz
- * @LastEditTime: 2020-09-21 16:13:31
+ * @LastEditTime: 2020-10-31 15:45:08
  */
 package middlewares
 
@@ -35,8 +35,8 @@ func JWT() gin.HandlerFunc {
 		}
 		if code != e.SUCCESS {
 			c.JSON(200, gin.H{
-				"status": code,
-				"msg":    e.GetMsg(code),
+				"code": code,
+				"msg":  e.GetMsg(code),
 			})
 
 			c.Abort()

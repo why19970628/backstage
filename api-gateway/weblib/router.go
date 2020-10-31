@@ -4,14 +4,17 @@
  * @Author: congz
  * @Date: 2020-09-20 11:33:37
  * @LastEditors: congz
- * @LastEditTime: 2020-10-29 14:57:15
+ * @LastEditTime: 2020-10-31 14:18:25
  */
 package weblib
 
 import (
+	"api-gateway/pkg/util/sdk"
 	"api-gateway/weblib/handlers"
 	"api-gateway/weblib/middlewares"
 
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,10 +23,17 @@ func NewRouter(service ...interface{}) *gin.Engine {
 	ginRouter := gin.Default()
 	//使用中间件，接收服务调用实例
 	ginRouter.Use(middlewares.Cors(), middlewares.InitMiddleware(service), middlewares.ErrorMiddleware())
+	//使用session中间件来调用极验
+	store := cookie.NewStore([]byte(sdk.VERSION))
+	ginRouter.Use(sessions.Sessions("mysession", store))
+
 	v1 := ginRouter.Group("/api/v1")
 	{
 		//用户服务
+		v1.POST("/admins/register", handlers.AdminRegister)
 		v1.POST("/admins", handlers.AdminLogin)
+
+		v1.GET("/geetest", handlers.InitGeetest)
 		// 需要登录保护的
 		authed := v1.Group("/")
 		authed.Use(middlewares.JWT())

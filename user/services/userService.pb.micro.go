@@ -35,6 +35,7 @@ var _ server.Option
 
 type UserService interface {
 	AdminLogin(ctx context.Context, in *AdminRequest, opts ...client.CallOption) (*AdminDetailResponse, error)
+	AdminRegister(ctx context.Context, in *AdminRequest, opts ...client.CallOption) (*AdminDetailResponse, error)
 	GetUsersList(ctx context.Context, in *UserRequest, opts ...client.CallOption) (*UsersListResponse, error)
 	GetUser(ctx context.Context, in *UserRequest, opts ...client.CallOption) (*UserDetailResponse, error)
 }
@@ -67,6 +68,16 @@ func (c *userService) AdminLogin(ctx context.Context, in *AdminRequest, opts ...
 	return out, nil
 }
 
+func (c *userService) AdminRegister(ctx context.Context, in *AdminRequest, opts ...client.CallOption) (*AdminDetailResponse, error) {
+	req := c.c.NewRequest(c.name, "UserService.AdminRegister", in)
+	out := new(AdminDetailResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userService) GetUsersList(ctx context.Context, in *UserRequest, opts ...client.CallOption) (*UsersListResponse, error) {
 	req := c.c.NewRequest(c.name, "UserService.GetUsersList", in)
 	out := new(UsersListResponse)
@@ -91,6 +102,7 @@ func (c *userService) GetUser(ctx context.Context, in *UserRequest, opts ...clie
 
 type UserServiceHandler interface {
 	AdminLogin(context.Context, *AdminRequest, *AdminDetailResponse) error
+	AdminRegister(context.Context, *AdminRequest, *AdminDetailResponse) error
 	GetUsersList(context.Context, *UserRequest, *UsersListResponse) error
 	GetUser(context.Context, *UserRequest, *UserDetailResponse) error
 }
@@ -98,6 +110,7 @@ type UserServiceHandler interface {
 func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) error {
 	type userService interface {
 		AdminLogin(ctx context.Context, in *AdminRequest, out *AdminDetailResponse) error
+		AdminRegister(ctx context.Context, in *AdminRequest, out *AdminDetailResponse) error
 		GetUsersList(ctx context.Context, in *UserRequest, out *UsersListResponse) error
 		GetUser(ctx context.Context, in *UserRequest, out *UserDetailResponse) error
 	}
@@ -114,6 +127,10 @@ type userServiceHandler struct {
 
 func (h *userServiceHandler) AdminLogin(ctx context.Context, in *AdminRequest, out *AdminDetailResponse) error {
 	return h.UserServiceHandler.AdminLogin(ctx, in, out)
+}
+
+func (h *userServiceHandler) AdminRegister(ctx context.Context, in *AdminRequest, out *AdminDetailResponse) error {
+	return h.UserServiceHandler.AdminRegister(ctx, in, out)
 }
 
 func (h *userServiceHandler) GetUsersList(ctx context.Context, in *UserRequest, out *UsersListResponse) error {

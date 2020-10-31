@@ -7,6 +7,16 @@ message AdminRequest{
   string UserName=1;
   // @inject_tag: json:"password" form:"password" uri:"password"
   string Password=2;
+  // @inject_tag: json:"password_confirm" form:"password_confirm" uri:"password_confirm"
+  string PasswordConfirm=3;
+  // @inject_tag: json:"identification" form:"identification" uri:"identification"
+  string Identification=4;
+  // @inject_tag: json:"challenge" form:"challenge" uri:"challenge"
+  string Challenge=5;  
+  // @inject_tag: json:"validate" form:"validate" uri:"validate" 
+  string Validate=6;   
+  // @inject_tag: json:"seccode" form:"seccode" uri:"seccode"
+	string Seccode=7;
 }
 message AdminDetailResponse{
   AdminModel AdminDetail=1;
@@ -32,6 +42,7 @@ message UserDetailResponse{
 
 service UserService{
   rpc AdminLogin(AdminRequest) returns(AdminDetailResponse);
+  rpc AdminRegister(AdminRequest) returns(AdminDetailResponse);
   rpc GetUsersList(UserRequest) returns(UsersListResponse);
   rpc GetUser(UserRequest) returns(UserDetailResponse);
 }

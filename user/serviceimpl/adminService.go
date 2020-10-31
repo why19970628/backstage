@@ -4,12 +4,14 @@
  * @Author: congz
  * @Date: 2020-09-15 10:57:26
  * @LastEditors: congz
- * @LastEditTime: 2020-09-22 21:50:57
+ * @LastEditTime: 2020-10-31 14:47:00
  */
 package serviceimpl
 
 import (
 	"context"
+	"errors"
+	"os"
 	"user/model"
 	"user/services"
 
@@ -44,6 +46,41 @@ func (*UserService) AdminLogin(ctx context.Context, req *services.AdminRequest, 
 	if admin.CheckPassword(req.Password) == false {
 		res.Code = 10004
 		return nil
+	}
+	adminRes := BuildAdmin(admin)
+	res.AdminDetail = adminRes
+	return nil
+}
+
+// AdminRegister 管理员注册
+func (*UserService) AdminRegister(ctx context.Context, req *services.AdminRequest, res *services.AdminDetailResponse) error {
+	if req.Identification != os.Getenv("Identification") {
+		err := errors.New("识别码错误")
+		return err
+	}
+	if req.Password != req.PasswordConfirm {
+		err := errors.New("两次密码输入不一致")
+		return err
+	}
+	count := 0
+	if err := model.DB.Model(&model.Admin{}).Where("user_name=?", req.UserName).Count(&count).Error; err != nil {
+		return err
+	}
+	if count > 0 {
+		err := errors.New("用户名已存在")
+		return err
+	}
+	admin := model.Admin{
+		UserName: req.UserName,
+		Avatar:   "img/avatar/avatar1.jpg",
+	}
+	// 加密密码
+	if err := admin.SetPassword(req.Password); err != nil {
+		return err
+	}
+	// 创建用户
+	if err := model.DB.Create(&admin).Error; err != nil {
+		return err
 	}
 	adminRes := BuildAdmin(admin)
 	res.AdminDetail = adminRes
